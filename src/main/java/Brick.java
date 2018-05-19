@@ -1,35 +1,14 @@
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Circle;
 
-public class Brick extends Pane {
-    private final BrickType type;
+class Brick extends Pane {
+  Brick(Color color, int x, int y) {
+    double radius = 0.33 * Checkers.GRID_SIZE;
 
-
-    // TODO: create (draw) brick
-    public Brick(BrickType type, int x, int y) {
-        this.type = type;
-
-        Ellipse ellipse = new Ellipse(Checkers.GRID_SIZE * 0.3135, Checkers.GRID_SIZE * 0.27);
-        ellipse.setFill(Color.BLACK);
-
-        ellipse.setStrokeWidth(Checkers.GRID_SIZE * 0.03);
-
-        ellipse.setTranslateX((Checkers.GRID_SIZE - Checkers.GRID_SIZE * 0.3135 * 2) / 2);
-        ellipse.setTranslateY(
-                (Checkers.GRID_SIZE - Checkers.GRID_SIZE * 0.27 * 2) / 2
-                        + Checkers.GRID_SIZE * 0.07);
-
-        Ellipse secondEllipse = new Ellipse(Checkers.GRID_SIZE * 0.3135, Checkers.GRID_SIZE * 0.27);
-        ellipse.setFill(type == BrickType.GREEN ? Color.valueOf("#c40003") : Color.valueOf("#fff9f4"));
-
-        ellipse.setStroke(Color.BLACK);
-        ellipse.setStrokeWidth(Checkers.GRID_SIZE * 0.03);
-
-        ellipse.setTranslateX((Checkers.GRID_SIZE - Checkers.GRID_SIZE * 0.3125 * 2) / 2);
-        ellipse.setTranslateY((Checkers.GRID_SIZE - Checkers.GRID_SIZE * 0.26 * 2) / 2);
-
-        getChildren().addAll(ellipse, secondEllipse);
-
-    }
+    Circle brick = new Circle(radius, color);
+    brick.setStroke(Color.BLACK);
+    brick.relocate(x * Checkers.GRID_SIZE + (radius / 2), y * Checkers.GRID_SIZE + (radius / 2));
+    getChildren().add(brick);
+  }
 }
