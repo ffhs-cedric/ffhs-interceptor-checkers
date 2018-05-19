@@ -3,13 +3,13 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
  * @author Piotr Mazurek
  * @author Patrick Glaser
  * @author Cedric Muehlebach
- *
  */
 public class Checkers extends Application {
 
@@ -41,8 +41,14 @@ public class Checkers extends Application {
         Field field = new Field(x, y, (x + y) % 2 != 0);
         gridGroup.getChildren().add(field);
 
-        // TODO: create and place bricks
-
+        Brick brick;
+        if (y <= 2 && (x + y) % 2 != 0) {
+          brick = new Brick(Color.DARKGREEN, x, y);
+          brickGroup.getChildren().add(brick);
+        } else if (y >= 5 && (x + y) % 2 != 0) {
+          brick = new Brick(Color.DARKRED, x, y);
+          brickGroup.getChildren().add(brick);
+        }
       }
     }
 
