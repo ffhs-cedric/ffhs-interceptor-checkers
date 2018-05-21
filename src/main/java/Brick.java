@@ -2,9 +2,20 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+/**
+ * Brick of the checkers board game. A brick has a x/y position and a color. A brick has implemented
+ * mouse events to move the brick to another position.
+ */
 class Brick extends Pane {
   private double xPos, yPos, mouseX, mouseY;
 
+  /**
+   * Constructor to create a new brick object.
+   *
+   * @param color Color of the brick
+   * @param x Position x
+   * @param y Position y
+   */
   Brick(Color color, int x, int y) {
     Circle brick = new Circle(0.33 * Checkers.GRID_SIZE, color);
     move(x, y);
@@ -24,6 +35,12 @@ class Brick extends Pane {
         });
   }
 
+  /**
+   * Placement of the brick.
+   *
+   * @param x Position x
+   * @param y Position y
+   */
   void move(int x, int y) {
     xPos = x * Checkers.GRID_SIZE + Checkers.GRID_SIZE / 2;
     yPos = y * Checkers.GRID_SIZE + Checkers.GRID_SIZE / 2;
