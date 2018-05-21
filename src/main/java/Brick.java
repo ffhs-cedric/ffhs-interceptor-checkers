@@ -49,4 +49,9 @@ class Brick extends Pane {
     yPos = y * Checkers.GRID_SIZE + Checkers.GRID_SIZE / 2;
     relocate(xPos, yPos);
   }
+
+  /** Reset position on invalid movement */
+  void resetMove() {
+    relocate(xPos, yPos);
+  }
 }

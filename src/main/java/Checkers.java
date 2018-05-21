@@ -94,9 +94,14 @@ public class Checkers extends Application {
           int newXPos = getBoardField(brick.getLayoutX());
           int newYPos = getBoardField(brick.getLayoutY());
 
-          brick.move(newXPos, newYPos);
-          board[x][y].setBrick(null);
-          board[getBoardField(newXPos)][getBoardField(newYPos)].setBrick(brick);
+          // Only allow brick movement on black fields
+          if ((newXPos + newYPos) % 2 != 0) {
+            brick.move(newXPos, newYPos);
+            board[x][y].setBrick(null);
+            board[getBoardField(newXPos)][getBoardField(newYPos)].setBrick(brick);
+          } else {
+            brick.resetMove();
+          }
         });
 
     return brick;
