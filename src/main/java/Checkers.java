@@ -36,8 +36,8 @@ public class Checkers extends Application {
     panel.setPrefSize(GRID_SIZE * GRID_COUNT, GRID_SIZE * GRID_COUNT);
     panel.getChildren().addAll(gridGroup, brickGroup);
 
-    for (int x = 0; x <= GRID_COUNT; x++) {
-      for (int y = 0; y <= GRID_COUNT; y++) {
+    for (int x = 0; x < GRID_COUNT; x++) {
+      for (int y = 0; y < GRID_COUNT; y++) {
         Field field = new Field(x, y, (x + y) % 2 != 0);
         gridGroup.getChildren().add(field);
 
