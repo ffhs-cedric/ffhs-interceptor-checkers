@@ -33,6 +33,9 @@ class Brick extends Pane {
           double deltaY = e.getSceneY() - mouseY;
           relocate(deltaX + xPos, deltaY + yPos);
         });
+
+    // There is a third event "setOnMouseReleased" implemented in the main application. This third
+    // event has to be in the main application to have access to further objects.
   }
 
   /**
