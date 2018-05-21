@@ -41,13 +41,14 @@ public class Checkers extends Application {
         Field field = new Field(x, y, (x + y) % 2 != 0);
         gridGroup.getChildren().add(field);
 
-        Brick brick;
         if (y <= 2 && (x + y) % 2 != 0) {
-          brick = new Brick(Color.DARKGREEN, x, y);
+          Brick brick = new Brick(Color.DARKGREEN, x, y);
           brickGroup.getChildren().add(brick);
+          field.setBrick(brick);
         } else if (y >= 5 && (x + y) % 2 != 0) {
-          brick = new Brick(Color.DARKRED, x, y);
+          Brick brick = new Brick(Color.DARKRED, x, y);
           brickGroup.getChildren().add(brick);
+          field.setBrick(brick);
         }
       }
     }
