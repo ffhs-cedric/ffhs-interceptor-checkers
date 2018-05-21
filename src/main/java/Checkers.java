@@ -19,6 +19,8 @@ public class Checkers extends Application {
   private Group gridGroup = new Group();
   private Group brickGroup = new Group();
 
+  private Field[][] board = new Field[GRID_COUNT][GRID_COUNT];
+
   public static void main(String[] args) {
     launch(args);
   }
@@ -40,13 +42,14 @@ public class Checkers extends Application {
       for (int y = 0; y < GRID_COUNT; y++) {
         Field field = new Field(x, y, (x + y) % 2 != 0);
         gridGroup.getChildren().add(field);
+        board[x][y] = field;
 
         if (y <= 2 && (x + y) % 2 != 0) {
-          Brick brick = new Brick(Color.DARKGREEN, x, y);
+          Brick brick = brickHandler(Color.DARKGREEN, x, y);
           brickGroup.getChildren().add(brick);
           field.setBrick(brick);
         } else if (y >= 5 && (x + y) % 2 != 0) {
-          Brick brick = new Brick(Color.DARKRED, x, y);
+          Brick brick = brickHandler(Color.DARKRED, x, y);
           brickGroup.getChildren().add(brick);
           field.setBrick(brick);
         }
@@ -54,5 +57,27 @@ public class Checkers extends Application {
     }
 
     return panel;
+  }
+
+  private Brick brickHandler(Color color, int x, int y) {
+    Brick brick = new Brick(color, x, y);
+
+    brick.setOnMouseReleased(
+        e -> {
+          int newXPos = getField(brick.getLayoutX());
+          int newYPos = getField(brick.getLayoutY());
+          System.out.println(newXPos);
+          System.out.println(newYPos);
+
+          brick.move(newXPos, newYPos);
+          board[x][y].setBrick(null);
+          board[getField(newXPos)][getField(newYPos)].setBrick(brick);
+        });
+
+    return brick;
+  }
+
+  private int getField(double pos) {
+    return (int) pos / GRID_SIZE;
   }
 }
