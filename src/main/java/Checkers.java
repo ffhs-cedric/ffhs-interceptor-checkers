@@ -24,11 +24,11 @@ public class Checkers extends Application {
   }
 
   @Override
-  public void start(Stage primaryStage) {
+  public void start(Stage stage) {
     Scene scene = new Scene(initGame());
-    primaryStage.setTitle("FFHS-CHECKERS \u00a9interceptor");
-    primaryStage.setScene(scene);
-    primaryStage.show();
+    stage.setTitle("FFHS-CHECKERS \u00a9interceptor");
+    stage.setScene(scene);
+    stage.show();
   }
 
   private Parent initGame() {
