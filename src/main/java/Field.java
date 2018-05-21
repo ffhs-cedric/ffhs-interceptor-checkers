@@ -3,7 +3,7 @@ import javafx.scene.shape.Rectangle;
 
 class Field extends Rectangle {
 
-  Brick brick;
+  private Brick brick;
 
   Field(int x, int y, boolean black) {
     setWidth(Checkers.GRID_SIZE);
@@ -16,7 +16,7 @@ class Field extends Rectangle {
     return brick;
   }
 
-  public void setBrick(Brick brick) {
+  void setBrick(Brick brick) {
     this.brick = brick;
   }
 }
