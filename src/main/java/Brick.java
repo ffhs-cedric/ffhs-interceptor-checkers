@@ -19,19 +19,18 @@ class Brick extends Pane {
 
     setOnMousePressed(
         e -> {
+          setFocused(true);
           mouseX = e.getSceneX();
           mouseY = e.getSceneY();
         });
 
     setOnMouseDragged(
         e -> {
-          relocate((e.getSceneX() - mouseX + xPos) / 2, (e.getSceneY() - mouseY + yPos) / 2);
-          System.out.println("xPos:" + xPos);
-          System.out.println("yPos:" + yPos);
-          System.out.println("xScene:" + (e.getSceneX()));
-          System.out.println("ySCene:" + (e.getSceneY()));
-          System.out.println("xNew:" + (e.getSceneX() - mouseX + xPos));
-          System.out.println("yNew:" + (e.getSceneY() - mouseY + yPos));
+          double deltaX = e.getSceneX() - mouseX;
+          double deltaY = e.getSceneY() - mouseY;
+          relocate(deltaX + xPos, deltaY + yPos);
+          xPos = brick.getCenterX();
+          yPos = brick.getCenterY();
         });
   }
 }
