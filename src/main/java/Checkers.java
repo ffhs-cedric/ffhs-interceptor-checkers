@@ -26,7 +26,7 @@ public class Checkers extends Application {
   @Override
   public void start(Stage primaryStage) {
     Scene scene = new Scene(initGame());
-    primaryStage.setTitle("FFHS checkers");
+    primaryStage.setTitle("FFHS-CHECKERS \u00a9interceptor");
     primaryStage.setScene(scene);
     primaryStage.show();
   }
