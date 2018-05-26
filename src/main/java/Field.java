@@ -31,4 +31,9 @@ class Field extends Rectangle {
   void setBrick(Brick brick) {
     this.brick = brick;
   }
+
+  /** @return */
+  Brick getBrick() {
+    return brick;
+  }
 }

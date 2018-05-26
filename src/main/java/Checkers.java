@@ -24,6 +24,8 @@ public class Checkers extends Application {
 
   private Field[][] board = new Field[GRID_COUNT][GRID_COUNT];
 
+  private boolean greenOnTurn = true;
+
   /**
    * Main method / entry point of this checkers game
    *
@@ -91,17 +93,63 @@ public class Checkers extends Application {
 
     brick.setOnMouseReleased(
         e -> {
-          int newXPos = getBoardField(brick.getLayoutX());
-          int newYPos = getBoardField(brick.getLayoutY());
+          if (brick.color.equals(Color.DARKGREEN) && greenOnTurn
+              || brick.color.equals(Color.DARKRED) && !greenOnTurn) {
 
-          // Only allow brick movement on black fields
-          if ((newXPos + newYPos) % 2 != 0) {
-            brick.move(newXPos, newYPos);
-            board[x][y].setBrick(null);
-            board[getBoardField(newXPos)][getBoardField(newYPos)].setBrick(brick);
-          } else {
-            brick.resetMove();
+            int oldX = getBoardField(brick.xPos);
+            int oldY = getBoardField(brick.yPos);
+            int newX = getBoardField(brick.getLayoutX());
+            int newY = getBoardField(brick.getLayoutY());
+
+            if (board[newX][newY].getBrick() != null) {
+              brick.resetMove();
+            } else {
+
+              if (Math.abs(newX - oldX) == 1 && newY - oldY == brick.moveDirection) {
+                brick.move(newX, newY);
+                board[oldX][oldY].setBrick(null);
+                board[newX][newY].setBrick(brick);
+                greenOnTurn = !greenOnTurn;
+              } else if (Math.abs(newX - oldX) == 2 && newY - oldY == brick.moveDirection * 2) {
+                int xBetween = oldX + ((newX - oldX) / 2);
+                int yBetween = oldY + ((newY - oldY) / 2);
+
+                Brick brickBetween = board[xBetween][yBetween].getBrick();
+                if (brickBetween != null) {
+                  if (!brick.color.equals(brickBetween.color)) {
+                    // MOVE
+                    brick.move(newX, newY);
+                    board[oldX][oldY].setBrick(null);
+                    board[newX][newY].setBrick(brick);
+
+                    // KILL
+                    board[xBetween][yBetween].setBrick(null);
+                    brickGroup.getChildren().remove(brickBetween);
+
+                    /* TODO: optimize prediction
+                    if ((board[newX + 1][newY + brick.moveDirection].getBrick() != null
+                            && board[newX + 2][newY + (brick.moveDirection * 2)].getBrick() == null
+                            && !board[newX + 1][newY + brick.moveDirection]
+                                .getBrick()
+                                .color
+                                .equals(brick.color))
+                        || board[newX - 1][newY + brick.moveDirection].getBrick() != null
+                            && board[newX - 2][newY + (brick.moveDirection * 2)].getBrick() == null
+                            && !board[newX - 1][newY + brick.moveDirection]
+                                .getBrick()
+                                .color
+                                .equals(brick.color)) {
+                      // NOP
+                    } else {*/
+                    greenOnTurn = !greenOnTurn;
+                    // }
+                  }
+                }
+              }
+            }
           }
+
+          brick.resetMove();
         });
 
     return brick;
