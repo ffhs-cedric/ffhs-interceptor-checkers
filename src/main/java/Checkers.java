@@ -7,8 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
- * FFHS group interceptor - Semesterarbeit "Dame-Brettspiel". As frontend we have chosen JavaFX as
- * it was developed as Swing replacement. Enjoy the game!
+ * FFHS group interceptor - Semesterarbeit "Dame-Brettspiel". Enjoy the game!
  *
  * @author Piotr Mazurek
  * @author Patrick Glaser
@@ -18,13 +17,15 @@ public class Checkers extends Application {
 
   static final int GRID_SIZE = 100;
   private static final int GRID_COUNT = 8;
+  static Color P1_COLOR = Color.DARKGREEN;
+  static Color P2_COLOR = Color.DARKRED;
 
   private Group gridGroup = new Group();
   private Group brickGroup = new Group();
 
   private Field[][] board = new Field[GRID_COUNT][GRID_COUNT];
 
-  private boolean greenOnTurn = true;
+  private boolean playerOneOnTurn = true;
 
   /**
    * Main method / entry point of this checkers game
@@ -65,11 +66,11 @@ public class Checkers extends Application {
         board[x][y] = field;
 
         if (y <= 2 && (x + y) % 2 != 0) {
-          Brick brick = brickHandler(Color.DARKGREEN, x, y);
+          Brick brick = brickHandler(P1_COLOR, x, y);
           brickGroup.getChildren().add(brick);
           field.setBrick(brick);
         } else if (y >= 5 && (x + y) % 2 != 0) {
-          Brick brick = brickHandler(Color.DARKRED, x, y);
+          Brick brick = brickHandler(P2_COLOR, x, y);
           brickGroup.getChildren().add(brick);
           field.setBrick(brick);
         }
@@ -80,7 +81,7 @@ public class Checkers extends Application {
   }
 
   /**
-   * Wrapper for creating bricks. Wrapper is needed to define a setOnMouseReleased event in this
+   * Wrapper for creating bricks. This wrapper is needed to define a setOnMouseReleased event in the
    * main class.
    *
    * @param color Color of new brick
@@ -93,57 +94,52 @@ public class Checkers extends Application {
 
     brick.setOnMouseReleased(
         e -> {
-          if (brick.color.equals(Color.DARKGREEN) && greenOnTurn
-              || brick.color.equals(Color.DARKRED) && !greenOnTurn) {
+          if (isOnTurn(brick)) {
 
-            int oldX = getBoardField(brick.xPos);
-            int oldY = getBoardField(brick.yPos);
-            int newX = getBoardField(brick.getLayoutX());
-            int newY = getBoardField(brick.getLayoutY());
+            int oX = getFieldCoordinate(brick.xPos);
+            int oY = getFieldCoordinate(brick.yPos);
+            int nX = getFieldCoordinate(brick.getLayoutX());
+            int nY = getFieldCoordinate(brick.getLayoutY());
 
-            if (board[newX][newY].getBrick() != null) {
+            // Deny to move on an occupied field
+            if (board[nX][nY].getBrick() != null) {
               brick.resetMove();
+
+              // Move validation
             } else {
 
-              if (Math.abs(newX - oldX) == 1 && newY - oldY == brick.moveDirection) {
-                brick.move(newX, newY);
-                board[oldX][oldY].setBrick(null);
-                board[newX][newY].setBrick(brick);
-                greenOnTurn = !greenOnTurn;
-              } else if (Math.abs(newX - oldX) == 2 && newY - oldY == brick.moveDirection * 2) {
-                int xBetween = oldX + ((newX - oldX) / 2);
-                int yBetween = oldY + ((newY - oldY) / 2);
+              // Move one field
+              if (nY - oY == brick.moveDir) {
 
-                Brick brickBetween = board[xBetween][yBetween].getBrick();
-                if (brickBetween != null) {
-                  if (!brick.color.equals(brickBetween.color)) {
-                    // MOVE
-                    brick.move(newX, newY);
-                    board[oldX][oldY].setBrick(null);
-                    board[newX][newY].setBrick(brick);
+                // Deny one field move if current color can devour an opponent brick
+                if (playerAbleToDevour(playerOneOnTurn)) {
+                  brick.resetMove();
 
-                    // KILL
-                    board[xBetween][yBetween].setBrick(null);
-                    brickGroup.getChildren().remove(brickBetween);
+                  //
+                } else {
+                  brick.move(nX, nY);
+                  board[oX][oY].setBrick(null);
+                  board[nX][nY].setBrick(brick);
+                  playerOneOnTurn = !playerOneOnTurn;
+                }
+                // Move two fields
+              } else if (nY - oY == brick.moveDir * 2 && brickAbleToDevour(brick)) {
 
-                    /* TODO: optimize prediction
-                    if ((board[newX + 1][newY + brick.moveDirection].getBrick() != null
-                            && board[newX + 2][newY + (brick.moveDirection * 2)].getBrick() == null
-                            && !board[newX + 1][newY + brick.moveDirection]
-                                .getBrick()
-                                .color
-                                .equals(brick.color))
-                        || board[newX - 1][newY + brick.moveDirection].getBrick() != null
-                            && board[newX - 2][newY + (brick.moveDirection * 2)].getBrick() == null
-                            && !board[newX - 1][newY + brick.moveDirection]
-                                .getBrick()
-                                .color
-                                .equals(brick.color)) {
-                      // NOP
-                    } else {*/
-                    greenOnTurn = !greenOnTurn;
-                    // }
-                  }
+                int bX = oX + ((nX - oX) / 2);
+                int bY = oY + ((nY - oY) / 2);
+                Brick brickBetween = board[bX][bY].getBrick();
+
+                // Process move
+                brick.move(nX, nY);
+                board[oX][oY].setBrick(null);
+                board[nX][nY].setBrick(brick);
+
+                // Remove devoured brick
+                board[bX][bY].setBrick(null);
+                brickGroup.getChildren().remove(brickBetween);
+
+                if (!playerAbleToDevour(playerOneOnTurn)) {
+                  playerOneOnTurn = !playerOneOnTurn;
                 }
               }
             }
@@ -156,12 +152,80 @@ public class Checkers extends Application {
   }
 
   /**
-   * Calculates field according to pixel position
+   * Determines if current player is able to devour an opposing brick
+   *
+   * @param p1 Boolean var for player switch. True means player 1 is on turn, false means player 2
+   *     is on turn
+   * @return Returns true if current player is able to eat an opposing brick
+   */
+  private boolean playerAbleToDevour(boolean p1) {
+
+    Color player = p1 ? P1_COLOR : P2_COLOR;
+
+    for (int x = 0; x < GRID_COUNT; x++) {
+      for (int y = 0; y < GRID_COUNT; y++) {
+        Brick b = board[x][y].getBrick();
+
+        if (b != null && b.color.equals(player)) {
+          if (brickAbleToDevour(b)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Determines if current brick is able to devour an opposing brick
+   *
+   * @param b Current brick
+   * @return Returns true if brick is able to eat an opposing brick
+   */
+  private boolean brickAbleToDevour(Brick b) {
+
+    int dir = b.moveDir;
+    int x = getFieldCoordinate(b.xPos);
+    int y = getFieldCoordinate(b.yPos);
+
+    for (int i = -1; i < 2; i += 2) {
+      int x1 = x + i;
+      int x2 = x + i * 2;
+      int y1 = y + dir;
+      int y2 = y + dir * 2;
+
+      if (x1 >= 0 && y1 >= 0 && x1 < 8 && y1 < 8) {
+        if (x2 >= 0 && y2 >= 0 && x2 < 8 && y2 < 8) {
+          Brick t = board[x1][y1].getBrick();
+          if (t != null && !t.color.equals(b.color) && board[x2][y2].getBrick() == null) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Checks if moving brick color is on turn
+   *
+   * @param brick Moving brick
+   * @return Returns true if moving brick is on turn
+   */
+  private boolean isOnTurn(Brick brick) {
+    return brick.color.equals(P1_COLOR) && playerOneOnTurn
+        || brick.color.equals(P2_COLOR) && !playerOneOnTurn;
+  }
+
+  /**
+   * Determines field according to pixel position
    *
    * @param pos Pixel position to get field for
    * @return Returns field of the board
    */
-  private int getBoardField(double pos) {
+  private int getFieldCoordinate(double pos) {
     return (int) pos / GRID_SIZE;
   }
 }

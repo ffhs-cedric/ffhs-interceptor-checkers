@@ -7,10 +7,14 @@ import javafx.scene.shape.Circle;
  * mouse events to move the brick to another position.
  */
 class Brick extends Pane {
-  private double mouseX, mouseY;
-  double xPos, yPos;
+
+  private double mouseX;
+  private double mouseY;
+
   Color color;
-  int moveDirection;
+  double xPos;
+  double yPos;
+  int moveDir;
 
   /**
    * Constructor to create a new brick object.
@@ -21,15 +25,10 @@ class Brick extends Pane {
    */
   Brick(Color color, int x, int y) {
     this.color = color;
-    if (this.color.equals(Color.DARKGREEN)) {
-      moveDirection = 1;
-    } else {
-      moveDirection = -1;
-    }
+    this.moveDir = color.equals(Checkers.P1_COLOR) ? 1 : -1;
 
     Circle brick = new Circle(0.33 * Checkers.GRID_SIZE, this.color);
     move(x, y);
-    getChildren().add(brick);
 
     setOnMousePressed(
         e -> {
@@ -46,6 +45,8 @@ class Brick extends Pane {
 
     // There is a third event "setOnMouseReleased" implemented in the main application. This third
     // event has to be in the main application to have access to further objects.
+
+    getChildren().add(brick);
   }
 
   /**
