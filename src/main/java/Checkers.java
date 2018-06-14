@@ -102,28 +102,18 @@ public class Checkers extends Application {
             int nY = getFieldCoordinate(brick.getLayoutY());
 
             // Deny to move on an occupied field
-            if (board[nX][nY].getBrick() != null) {
-              brick.resetMove();
-
-              // Move validation
-            } else {
+            if (board[nX][nY].getBrick() == null) {
 
               // Move one field
-              if (nY - oY == brick.moveDir) {
+              if (nY - oY == brick.moveDir && playerNotAbleToDevour(playerOneOnTurn)) {
 
-                // Deny one field move if current color can devour an opponent brick
-                if (playerAbleToDevour(playerOneOnTurn)) {
-                  brick.resetMove();
+                brick.move(nX, nY);
+                board[oX][oY].setBrick(null);
+                board[nX][nY].setBrick(brick);
+                playerOneOnTurn = !playerOneOnTurn;
 
-                  //
-                } else {
-                  brick.move(nX, nY);
-                  board[oX][oY].setBrick(null);
-                  board[nX][nY].setBrick(brick);
-                  playerOneOnTurn = !playerOneOnTurn;
-                }
                 // Move two fields
-              } else if (nY - oY == brick.moveDir * 2 && brickAbleToDevour(brick)) {
+              } else if (nY - oY == brick.moveDir * 2 && brickIsAbleToDevour(brick)) {
 
                 int bX = oX + ((nX - oX) / 2);
                 int bY = oY + ((nY - oY) / 2);
@@ -138,7 +128,7 @@ public class Checkers extends Application {
                 board[bX][bY].setBrick(null);
                 brickGroup.getChildren().remove(brickBetween);
 
-                if (!playerAbleToDevour(playerOneOnTurn)) {
+                if (playerNotAbleToDevour(playerOneOnTurn)) {
                   playerOneOnTurn = !playerOneOnTurn;
                 }
               }
@@ -152,13 +142,13 @@ public class Checkers extends Application {
   }
 
   /**
-   * Determines if current player is able to devour an opposing brick
+   * Determines if current player is NOT able to devour an opposing brick
    *
    * @param p1 Boolean var for player switch. True means player 1 is on turn, false means player 2
    *     is on turn
    * @return Returns true if current player is able to eat an opposing brick
    */
-  private boolean playerAbleToDevour(boolean p1) {
+  private boolean playerNotAbleToDevour(boolean p1) {
 
     Color player = p1 ? P1_COLOR : P2_COLOR;
 
@@ -167,23 +157,23 @@ public class Checkers extends Application {
         Brick b = board[x][y].getBrick();
 
         if (b != null && b.color.equals(player)) {
-          if (brickAbleToDevour(b)) {
-            return true;
+          if (brickIsAbleToDevour(b)) {
+            return false;
           }
         }
       }
     }
 
-    return false;
+    return true;
   }
 
   /**
-   * Determines if current brick is able to devour an opposing brick
+   * Determines if current brick IS able to devour an opposing brick
    *
    * @param b Current brick
    * @return Returns true if brick is able to eat an opposing brick
    */
-  private boolean brickAbleToDevour(Brick b) {
+  private boolean brickIsAbleToDevour(Brick b) {
 
     int dir = b.moveDir;
     int x = getFieldCoordinate(b.xPos);
