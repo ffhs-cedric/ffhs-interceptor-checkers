@@ -120,7 +120,7 @@ public class Checkers extends Application {
     if (targetField.isDark() && targetField.isEmpty()) {
 
       // Move one field
-      if (playerNotAbleToDevour(playerOneOnTurn) && isValidStep(brick, 1, yDiff)) {
+      if (!playerAbleToDevour(playerOneOnTurn) && isValidStep(brick, 1, yDiff)) {
 
         brick.move(nX, nY);
         sourceField.setBrick(null);
@@ -151,7 +151,7 @@ public class Checkers extends Application {
           replaceBrickWithDame(brick, nX, nY);
         }
 
-        if (playerNotAbleToDevour(playerOneOnTurn)) {
+        if (!playerAbleToDevour(playerOneOnTurn)) {
           playerOneOnTurn = !playerOneOnTurn;
         }
       }
@@ -185,13 +185,13 @@ public class Checkers extends Application {
   }
 
   /**
-   * Determines if current player is NOT able to devour an opposing brick
+   * Determines if current player is able to devour an opposing brick
    *
    * @param p1 Boolean var for player switch. True means player 1 is on turn, false means player 2
    *     is on turn
-   * @return Returns true if current player is NOT able to eat an opposing brick
+   * @return Returns true if current player is able to eat an opposing brick
    */
-  private boolean playerNotAbleToDevour(boolean p1) {
+  private boolean playerAbleToDevour(boolean p1) {
 
     Color player = p1 ? P1_COLOR : P2_COLOR;
 
@@ -201,13 +201,13 @@ public class Checkers extends Application {
 
         if (b != null && b.getColor().equals(player)) {
           if (b.isAbleToDevour(board)) {
-            return false;
+            return true;
           }
         }
       }
     }
 
-    return true;
+    return false;
   }
 
   /**
