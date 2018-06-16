@@ -7,11 +7,11 @@ import javafx.scene.shape.Rectangle;
  */
 class Field extends Rectangle {
 
-  private static final Color BRIGHT = Color.LIGHTGREY;
+  private static final Color BRIGHT = Color.BEIGE;
   private static final Color DARK = Color.BLACK;
 
   private Brick brick;
-  private Color color;
+  private final Color color;
 
   /**
    * Constructor to create a new field object.
@@ -29,6 +29,36 @@ class Field extends Rectangle {
     setFill(color);
   }
 
+  /** @return */
+  boolean isDark() {
+    return getColor().equals(Field.DARK);
+  }
+
+  boolean isEmpty() {
+    return getBrick() == null;
+  }
+
+  /**
+   * Determines field according to pixel position
+   *
+   * @param pos Pixel position to get field for
+   * @return Returns field of the board
+   */
+  static int getFieldCoord(double pos) {
+    return (int) pos / Checkers.GRID_SIZE;
+  }
+
+  /**
+   * TODO
+   *
+   * @param x
+   * @param y
+   * @return
+   */
+  static boolean inBoardRange(int x, int y) {
+    return x >= 0 && y >= 0 && x < Checkers.GRID_COUNT && y < Checkers.GRID_COUNT;
+  }
+
   /**
    * Set a brick object on to the field
    *
@@ -41,5 +71,9 @@ class Field extends Rectangle {
   /** @return */
   Brick getBrick() {
     return brick;
+  }
+
+  Color getColor() {
+    return color;
   }
 }
