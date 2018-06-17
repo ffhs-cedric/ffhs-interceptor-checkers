@@ -1,11 +1,10 @@
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 /**
  * Field of the checkers board game. A field has a x/y position and a color. A field can have a
  * brick set or not.
  */
-class Field extends Rectangle {
+class Field extends Board {
 
   private static final Color BRIGHT = Color.BEIGE;
   private static final Color DARK = Color.BLACK;
@@ -39,16 +38,6 @@ class Field extends Rectangle {
   }
 
   /**
-   * Determines field according to pixel position
-   *
-   * @param pos Pixel position to get field for
-   * @return Returns field of the board
-   */
-  static int getFieldCoord(double pos) {
-    return (int) pos / Checkers.GRID_SIZE;
-  }
-
-  /**
    * TODO
    *
    * @param x
@@ -66,11 +55,20 @@ class Field extends Rectangle {
    */
   void setBrick(Brick brick) {
     this.brick = brick;
+
+    /** if (brick != null) { addToBrickGroup(brick); }* */
   }
 
   /** @return */
   Brick getBrick() {
     return brick;
+  }
+
+  /** @param brick */
+  void removeBrick(Brick brick) {
+    setBrick(null);
+
+    removeFromBrickGroup(brick);
   }
 
   Color getColor() {

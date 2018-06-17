@@ -26,7 +26,7 @@ class Brick extends Pane {
    */
   Brick(Color color, int x, int y, boolean isDame) {
     this.color = color;
-    this.moveDir = color.equals(Checkers.P1_COLOR) ? 1 : -1;
+    this.moveDir = color.equals(Player.P1_COLOR) ? 1 : -1;
     this.isDame = isDame;
 
     Circle brick = new Circle(0.33 * Checkers.GRID_SIZE, this.getColor());
@@ -53,57 +53,6 @@ class Brick extends Pane {
       brick.setStrokeWidth(2);
     }
     getChildren().add(brick);
-  }
-
-
-  /**
-   * Determines if current brick IS able to devour an opposing brick
-   *
-   * @param board
-   * @return Returns true if brick is able to eat an opposing brick
-   */
-  boolean isAbleToDevour(Field[][] board) {
-
-    int dir = getMoveDir();
-    int x = Field.getFieldCoord(getX());
-    int y = Field.getFieldCoord(getY());
-
-    for (int i = -1; i < 2; i += 2) {
-      int x1 = x + i;
-      int x2 = x + i * 2;
-      int y1 = y + dir;
-      int y2 = y + dir * 2;
-
-      if (Field.inBoardRange(x1, y1) && Field.inBoardRange(x2, y2)) {
-        Brick t = board[x1][y1].getBrick();
-        if (t != null && !t.getColor().equals(getColor()) && board[x2][y2].getBrick() == null) {
-          return true;
-        }
-      }
-      if (isDame()) {
-        y1 = y + dir * -1;
-        y2 = y + dir * -2;
-
-        if (Field.inBoardRange(x1, y1) && Field.inBoardRange(x2, y2)) {
-          Brick t = board[x1][y1].getBrick();
-          if (t != null && !t.getColor().equals(getColor()) && board[x2][y2].getBrick() == null) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
-
-  /**
-   * TODO
-   *
-   * @param dir
-   * @param y
-   * @return
-   */
-  static boolean hasFieldBoundaryReached(int dir, int y) {
-    return y + dir < 0 || y + dir > 7;
   }
 
   /**
@@ -150,5 +99,4 @@ class Brick extends Pane {
   boolean isDame() {
     return isDame;
   }
-
 }
