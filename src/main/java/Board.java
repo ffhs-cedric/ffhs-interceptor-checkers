@@ -9,9 +9,10 @@ class Board extends Rectangle {
   private Player playerOne;
   private Player playerTwo;
 
+  /** Default constructor */
   Board() {}
 
-  /** Defaul constructor */
+  /** Default constructor */
   Board(Player playerOne, Player playerTwo) {
     this.playerOne = playerOne;
     this.playerTwo = playerTwo;
@@ -20,7 +21,7 @@ class Board extends Rectangle {
     initBoard();
   }
 
-  /** */
+  /** Initializes board */
   private void initBoard() {
     for (int x = 0; x < Checkers.GRID_COUNT; x++) {
       for (int y = 0; y < Checkers.GRID_COUNT; y++) {
@@ -30,11 +31,13 @@ class Board extends Rectangle {
 
         System.out.println("create brick");
         if (y <= 2 && (x + y) % 2 != 0) {
-          Brick brick = brickHandler(playerOne, x, y, false);
+          Brick brick = new Brick(playerOne.getColor(), x, y, false);
+          brick.setOnMouseDragged(e -> playerOne.getMove());
           brickGroup.getChildren().add(brick);
           field.setBrick(brick);
         } else if (y >= 5 && (x + y) % 2 != 0) {
-          Brick brick = brickHandler(playerTwo, x, y, false);
+          Brick brick = new Brick(playerTwo.getColor(), x, y, false);
+          brick.setOnMouseDragged(e -> playerTwo.getMove());
           brickGroup.getChildren().add(brick);
           field.setBrick(brick);
         }
@@ -54,13 +57,11 @@ class Board extends Rectangle {
 
     Brick brick = new Brick(player.getColor(), x, y, d);
 
-    // if (player.getClass() == Human.class) {
     brick.setOnMouseReleased(
         e -> {
           player.getMove();
           // player.updateBrick(brick);
         });
-    // }
 
     return brick;
   }
@@ -82,10 +83,6 @@ class Board extends Rectangle {
 
   Group getBrickGroup() {
     return brickGroup;
-  }
-
-  void addToBrickGroup(Brick brick) {
-    this.brickGroup.getChildren().add(brick);
   }
 
   void removeFromBrickGroup(Brick brick) {
@@ -190,12 +187,12 @@ class Board extends Rectangle {
   }
 
   /**
-   * TODO
+   * Validates brick step
    *
-   * @param b
-   * @param step
-   * @param depth
-   * @return
+   * @param b Brick
+   * @param step Step as difference from old to new Y position
+   * @param depth Depth to test against
+   * @return Returns true on valid brick step
    */
   boolean isValidStep(Brick b, int step, int depth) {
     return (step == b.getMoveDir() * depth) || (b.isDame() && (step == b.getMoveDir() * -depth));

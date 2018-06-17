@@ -7,7 +7,7 @@ public class Computer extends Player {
 
   /** Default constructor */
   public Computer(Color color) {
-      super(color);
+    super(color);
   }
 
   /**
@@ -42,7 +42,6 @@ public class Computer extends Player {
       }
     }
   }
-
 
   void processMinimaxMove() {
     System.out.println("Berechne CPU move..");

@@ -38,11 +38,11 @@ class Field extends Board {
   }
 
   /**
-   * TODO
+   * Test if x&z pair is in board range
    *
-   * @param x
-   * @param y
-   * @return
+   * @param x x coordinate
+   * @param y z coordinate
+   * @return Returns true if coordinates are in board range
    */
   static boolean inBoardRange(int x, int y) {
     return x >= 0 && y >= 0 && x < Checkers.GRID_COUNT && y < Checkers.GRID_COUNT;

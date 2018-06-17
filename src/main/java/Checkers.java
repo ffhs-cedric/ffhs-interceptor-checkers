@@ -16,14 +16,12 @@ public class Checkers extends Application {
   static final int GRID_SIZE = 50;
   static final int GRID_COUNT = 8;
 
-
-
   /**
    * Main method / entry point of this checkers game
    *
    * @param args Application arguments
    */
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) {
     launch(args);
   }
 
@@ -62,8 +60,8 @@ public class Checkers extends Application {
    */
   private Parent initGame(Game game) {
 
-    game.setPlayerOne(new Human(game.alternator, Player.P1_COLOR));
-    game.setPlayerTwo(new Human(game.alternator, Player.P2_COLOR));
+    game.setPlayerOne(new Human(game.alternator, Player.P1_COLOR, true));
+    game.setPlayerTwo(new Human(game.alternator, Player.P2_COLOR, false));
     game.setBoard(new Board((Player) game.getPlayerOne(), (Player) game.getPlayerTwo()));
 
     Pane panel = new Pane();

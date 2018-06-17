@@ -4,17 +4,18 @@ public class Human extends Player {
 
   private Board board;
   private Brick brick;
-  private boolean[] lock;
-  private final boolean waitValue = false;
+  private final boolean[] lock;
+  private boolean waitValue;
 
   /**
    * Default constructor
    *
    * @param lock
    */
-  Human(boolean[] lock, Color color) {
+  Human(boolean[] lock, Color color, boolean starts) {
     super(color);
     this.lock = lock;
+    this.waitValue = starts;
   }
 
   /**
@@ -36,30 +37,31 @@ public class Human extends Player {
 
   @Override
   void getMove() {
-    /*synchronized (lock) {*/
-    while (lock[0] != waitValue) {
-      try {
-        lock.wait();
-      } catch (InterruptedException e) {
 
-      }
-      if (processMove(brick)) {
-        lock[0] = !waitValue;
-        lock.notifyAll();
-      } else {
-        brick.resetMove();
+    synchronized (lock) {
+      while (lock[0] != waitValue) {
+        try {
+          lock.wait();
+        } catch (InterruptedException e) {
+
+        }
+        if (processMove(brick)) {
+          lock[0] = !waitValue;
+          lock.notifyAll();
+        } else {
+          brick.resetMove();
+        }
       }
     }
   }
 
   /**
-   * TODO
+   * processes humans move on mouse dragged release event.
    *
-   * @param brick
+   * @param brick Brick to move
    */
   private boolean processMove(Brick brick) {
 
-    System.out.println("****************************************");
     int oX = Board.getFieldCoord(brick.getX());
     int oY = Board.getFieldCoord(brick.getY());
     int nX = Board.getFieldCoord(brick.getLayoutX());

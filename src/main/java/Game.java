@@ -1,16 +1,20 @@
-public class Game {
+/** */
+class Game {
 
   private Board board;
-  private Runnable playerOne;
-  private Runnable playerTwo;
+  private Player playerOne;
+  private Player playerTwo;
   boolean[] alternator = new boolean[1];
 
-  Game() {}
+  /** Default constructor */
+  Game() {
+    alternator[0] = true;
+  }
 
   /**
-   * TODO
+   * Determines if game is over
    *
-   * @return
+   * @return Returns true when game is over
    */
   boolean isGameOver() {
     int p1 = 0;
@@ -40,19 +44,19 @@ public class Game {
     this.board = board;
   }
 
-  Runnable getPlayerOne() {
+  Player getPlayerOne() {
     return playerOne;
   }
 
-  void setPlayerOne(Runnable playerOne) {
+  void setPlayerOne(Player playerOne) {
     this.playerOne = playerOne;
   }
 
-  Runnable getPlayerTwo() {
+  Player getPlayerTwo() {
     return playerTwo;
   }
 
-  void setPlayerTwo(Runnable playerTwo) {
+  void setPlayerTwo(Player playerTwo) {
     this.playerTwo = playerTwo;
   }
 }

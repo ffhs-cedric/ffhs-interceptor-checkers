@@ -6,6 +6,11 @@ abstract class Player implements Runnable {
 
   private Color color;
 
+  /**
+   * Default constructor
+   *
+   * @param color Plazers color scheme
+   */
   Player(Color color) {
     this.color = color;
   }
